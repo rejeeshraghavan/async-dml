@@ -5,9 +5,15 @@
 # Salesforce cache
 .sfdx/
 .localdevserver/
+.forceignore
+
+# LWC configuration files
+**/jsconfig.json
+**/.eslintrc.json
 
 # LWC VSCode autocomplete
 **/lwc/jsconfig.json
+**/lwc/eslintrc.json
 
 # LWC Jest coverage reports
 coverage/
@@ -33,3 +39,13 @@ Thumbs.db
 ehthumbs.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
+
+#vscode
+.vscode
+
+#prettier
+.prettierignore
+.prettierrc
+
+#history
+.history/
