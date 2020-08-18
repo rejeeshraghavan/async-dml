@@ -44,30 +44,38 @@ Salesforce, as of API v49.0, provides asynchronous DML ability only for external
     name='Chained Dummy'
   );
   ```
-  
+
 ### Insert List
+  ```java
   //this will simply insert the list of accounts as a queueable job
-  `AsyncDml.insertList(listAccountToInsert);`
+  AsyncDml.insertList(listAccountToInsert);
+  ```
 
 ### Insert list with allOrNone
+  ```java
   //this will simply insert the list of accounts as a queueable job.
-  `AsyncDml.insertList(listAccountToInsert, false );`
+  AsyncDml.insertList(listAccountToInsert, false);
+  ```
 
 ### Insert list with callbackMethod
+  ```java
   //this will simply insert the list of accounts as a queueable job.
   //After the DML operation AsyncDmlExtension.callbackMethod() method is invoked.
-  `AsyncDml.insertList(listAccountToInsert, null, 'AsyncDmlExtension.callbackMethod');`
+  AsyncDml.insertList(listAccountToInsert, null, 'AsyncDmlExtension.callbackMethod');
+  ```
 
 ###### NOTE
   - callback method can be any method in a class which implements `Callable interface`. Check `AsyncDmlExtension` class for example.
 
 ### Insert list with chained queueable job
+  ```java
   //create a queueable job to be chained
-  `AsyncDmlHelper chainedJob = new AsyncDmlHelper(new List<SObject>{accountToUpsert}, 'upsert', null, null, null);`
+  AsyncDmlHelper chainedJob = new AsyncDmlHelper(new List<SObject>{accountToUpsert}, 'upsert', null, null, null);
   
   //this will insert the list of Accounts, & once the insert is finished
   //it will enqueue the upsert operation.
-  `AsyncDml.insertList(listAccountToInsert, null, null, chainedJob);`
+  AsyncDml.insertList(listAccountToInsert, null, null, chainedJob);
+  ```
 
 ### NOTE
 
