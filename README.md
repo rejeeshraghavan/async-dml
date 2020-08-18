@@ -19,24 +19,19 @@ Salesforce, as of API v49.0, provides asynchronous DML ability only for external
 
 ## Usage
 
+### Method input parameters
   Below are the optional parameters for each operation:-
     
-    #### 
+  - `isAllOrNone` - To specifiy whether the operation allows partial success. Default is true.
     
-    `isAllOrNone` To specifiy whether the operation allows partial success. Default is true.
-
-    #### 
+  - `strCallbackMethod` - Fully qualified API Name of callback method. The callback class MUST implement Callable interface.
+      - callbackMethod - returns the following parameters:-
+        - `jobId` - Queueable jobId of the current job.
+        - `strStatus` - status of job, 'success' or 'failure'.
+        - `strErrorMessage` - Error message, if any. In case of success, this parameter will be null.
+        - `listResult` - If 'success' it returns Database.SaveResult[] or Database.DeleteResult[] or Database.UpsertResult[]. In case of 'failure' it returns the input list.
     
-    `strCallbackMethod` Fully qualified API Name of callback method. The callback class MUST implement Callable interface.
-      - callbackMethod returns the following parameters:-
-        - `jobId`  Queueable jobId of the current job.
-        - `strStatus`  status of job, 'success' or 'failure'.
-        - `strErrorMessage`  Error message, if any. In case of success, this parameter will be null.
-        - `listResult`  If 'success' it returns Database.SaveResult[] or Database.DeleteResult[] or Database.UpsertResult[]. In case of 'failure' it returns the input list.
-
-    #### 
-    
-    `chainedJob`  The chainedJob to be executed on completion of the current job.
+  - `chainedJob` - The chainedJob to be executed on completion of the current job.
 
 ### Dummy Data preparation
 
@@ -69,6 +64,6 @@ Salesforce, as of API v49.0, provides asynchronous DML ability only for external
 
 ### NOTE
 
-  `insert`, `delete` & `update` operations are allowed for either List or an individual record
-  `upsert` operation is supported ONLY for an individual record.
+- `insert`, `delete` & `update` operations are allowed for either List or an individual record
+- `upsert` operation is supported ONLY for an individual record.
 
