@@ -34,7 +34,7 @@ Salesforce, as of API v49.0, provides asynchronous DML ability only for external
   - `chainedJob` - The chainedJob to be executed on completion of the current job.
 
 ### Dummy Data preparation
-
+  ```java
   List<Account> listAccountToInsert = new List<Account>();
     listAccountToInsert.add(
       new Account( name = 'Dummy')
@@ -43,33 +43,33 @@ Salesforce, as of API v49.0, provides asynchronous DML ability only for external
   Account accountToUpsert = new Account(
     name='Chained Dummy'
   );
-
+  ```
+  
 ### Insert List
   //this will simply insert the list of accounts as a queueable job
-  AsyncDml.insertList(listAccountToInsert);
+  `AsyncDml.insertList(listAccountToInsert);`
 
 ### Insert list with allOrNone
   //this will simply insert the list of accounts as a queueable job.
-  AsyncDml.insertList(listAccountToInsert, false );
+  `AsyncDml.insertList(listAccountToInsert, false );`
 
 ### Insert list with callbackMethod
   //this will simply insert the list of accounts as a queueable job.
   //After the DML operation AsyncDmlExtension.callbackMethod() method is invoked.
-  AsyncDml.insertList(listAccountToInsert, null, 'AsyncDmlExtension.callbackMethod');
+  `AsyncDml.insertList(listAccountToInsert, null, 'AsyncDmlExtension.callbackMethod');`
 
 ###### NOTE
   - callback method can be any method in a class which implements `Callable interface`. Check `AsyncDmlExtension` class for example.
 
 ### Insert list with chained queueable job
   //create a queueable job to be chained
-  AsyncDmlHelper chainedJob = new AsyncDmlHelper(new List<SObject>{accountToUpsert}, 'upsert', null, null, null);
+  `AsyncDmlHelper chainedJob = new AsyncDmlHelper(new List<SObject>{accountToUpsert}, 'upsert', null, null, null);`
   
   //this will insert the list of Accounts, & once the insert is finished
   //it will enqueue the upsert operation.
-  AsyncDml.insertList(listAccountToInsert, null, null, chainedJob);
+  `AsyncDml.insertList(listAccountToInsert, null, null, chainedJob);`
 
 ### NOTE
 
 - `insert`, `delete` & `update` operations are allowed for either List or an individual record
 - `upsert` operation is supported ONLY for an individual record.
-
