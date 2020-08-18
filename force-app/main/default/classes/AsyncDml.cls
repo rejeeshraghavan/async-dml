@@ -31,31 +31,31 @@ public with sharing class AsyncDml{
         return deleteList(listRecordsToDelete, isAllOrNone, strCallbackMethod, null);
     }
     public static Id insertList(List<sObject> listRecordsToInsert, Boolean isAllOrNone){
-        return insertList(listRecordsToInsert, null, null, null);
+        return insertList(listRecordsToInsert, isAllOrNone, null, null);
     }
     public static Id updateList(List<sObject> listRecordsToUpdate, Boolean isAllOrNone){
-        return updateList(listRecordsToUpdate, null, null, null);
+        return updateList(listRecordsToUpdate, isAllOrNone, null, null);
     }
     public static Id deleteList(List<sObject> listRecordsToDelete, Boolean isAllOrNone){
-        return deleteList(listRecordsToDelete, null, null, null);
+        return deleteList(listRecordsToDelete, isAllOrNone, null, null);
     }
     public static Id insertList(List<sObject> listRecordsToInsert){
-        return insertList(listRecordsToInsert, null);
+        return insertList(listRecordsToInsert, null, null, null);
     }
     public static Id updateList(List<sObject> listRecordsToUpdate){
-        return updateList(listRecordsToUpdate, null);
+        return updateList(listRecordsToUpdate, null, null, null);
     }
     public static Id deleteList(List<sObject> listRecordsToDelete){
-        return deleteList(listRecordsToDelete, null);
+        return deleteList(listRecordsToDelete, null, null, null);
     }
     public static Id insertRecord(sObject recordToInsert){
-        return insertList(new List<sObject>{recordToInsert});
+        return insertList(new List<sObject>{recordToInsert}, null, null, null);
     }
     public static Id updateRecord(sObject recordToUpdate){
-        return updateList(new List<sObject>{recordToUpdate});
+        return updateList(new List<sObject>{recordToUpdate}, null, null, null);
     }
     public static Id deleteRecord(sObject recordToDelete){
-        return deleteList(new List<sObject>{recordToDelete});
+        return deleteList(new List<sObject>{recordToDelete}, null, null, null);
     }
     public static Id upsertRecord(sObject recordToUpsert){
         asyncDmlJob = new AsyncDmlHelper(new List<SObject>{recordToUpsert}, 'upsert',null, null, null);
