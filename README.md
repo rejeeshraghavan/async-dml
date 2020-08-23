@@ -1,6 +1,14 @@
 # Asynchronous Salesforce DML
 
-Salesforce, as of API v49.0, provides asynchronous DML ability only for external objects. This library allows execution of dml for internal object, using queueable interface with features like callback method options.
+As of API v49.0, Salesforce apex provides asynchronous DML ability only for external objects. This apex library allows execution of dml for internal object, using queueable interface with features like callback method options.
+Also, asynchronous mode has increased governor limits, as below:- 
+
+| Description | Synchronous Limit | Asynchronous Limit |
+| --- | --- | --- |
+| Total number of SOQL queries issued | 100 | 200 |
+| Total heap size | 6MB | 12MB |
+| Maximum CPU time on the Salesforce servers | 10,000 milliseconds | 60,000 milliseconds |
+
 
 ## Features
 
@@ -73,8 +81,10 @@ Salesforce, as of API v49.0, provides asynchronous DML ability only for external
   //it will enqueue the upsert operation.
   AsyncDml.insertList(listAccountToInsert, null, null, chainedJob);
   ```
-
-### NOTE
+###### NOTE
+  - chaining queueable methods comes handy when dealing with high volume of records.
+  
+### CONSIDERATIONS
 
 - `insert`, `delete` & `update` operations are allowed for either List or an individual record
 - `upsert` operation is supported ONLY for an individual record.
