@@ -12,17 +12,14 @@ Salesforce, as of API v49.0, provides asynchronous DML ability only for external
 
 ## Installation
 
-  TODO:
-  Click on the button below to deploy the component to the org
-
-  [![Deploy](https://deploy-to-sfdx.com/dist/assets/images/DeployToSFDX.svg)](https://deploy-to-sfdx.com)
+  TODO: Add installation button
 
 ## Usage
 
 ### Method input parameters
   Below are the optional parameters for each operation:-
     
-  - `isAllOrNone` - To specifiy whether the operation allows partial success. Default is true.
+  - `isAllOrNone` - To specify whether the operation allows partial success. Default is true.
     
   - `strCallbackMethod` - Fully qualified API Name of callback method. The callback class MUST implement Callable interface.
       - callbackMethod - returns the following parameters:-
