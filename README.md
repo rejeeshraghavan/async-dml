@@ -1,6 +1,7 @@
 # Asynchronous Salesforce DML
 
-As of API v49.0, Salesforce apex provides asynchronous DML ability only for external objects. This apex library allows execution of dml for internal object, using queueable interface with features like callback method options.
+This apex library allows asynchronous execution of dml for internal object, using queueable interface with features like callback method options.
+As of API v49.0, Salesforce apex provides asynchronous DML ability only for external objects.
 Also, asynchronous mode has increased governor limits, as below:- 
 
 | Description | Synchronous Limit | Asynchronous Limit |
