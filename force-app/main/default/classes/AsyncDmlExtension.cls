@@ -5,6 +5,7 @@ public with sharing class AsyncDmlExtension implements Callable{
                 return this.asyncCallback((Id)args.get('jobId')
                                                 , (String)args.get('strStatus')
                                                 , (String)args.get('strErrorMessage')
+                                                , (Integer)args.get('intExecutionCount')
                                                 , (List<SObject>)args.get('listResult'));
             }
             when else {
@@ -12,10 +13,11 @@ public with sharing class AsyncDmlExtension implements Callable{
             }
         }
     }
-    String asyncCallback(Id jobId, String strStatus, String strErrorMessage,List<SObject> listResult){
+    String asyncCallback(Id jobId, String strStatus, String strErrorMessage,Integer intExecutionCount, List<SObject> listResult){
         System.debug(System.LoggingLevel.INFO,'jobId: '+ jobId);
         System.debug(System.LoggingLevel.INFO,'strStatus: '+ strStatus);
         System.debug(System.LoggingLevel.INFO,'strErrorMessage: '+ strErrorMessage);
+        System.debug(System.LoggingLevel.INFO,'intExecutionCount: '+ intExecutionCount);
         System.debug(System.LoggingLevel.INFO,'listResult: '+ listResult);
         Database.insert(
             new Task(
@@ -24,6 +26,29 @@ public with sharing class AsyncDmlExtension implements Callable{
                 Description = 'JobId: ' + String.valueOf(jobId)
             )
         );
+        return null;
+    }
+    String asyncCallbackRetry(Id jobId, String strStatus, String strErrorMessage,Integer intExecutionCount, List<SObject> listResult){
+        System.debug(System.LoggingLevel.INFO,'jobId: '+ jobId);
+        System.debug(System.LoggingLevel.INFO,'strStatus: '+ strStatus);
+        System.debug(System.LoggingLevel.INFO,'strErrorMessage: '+ strErrorMessage);
+        System.debug(System.LoggingLevel.INFO,'intExecutionCount: '+ intExecutionCount);
+        System.debug(System.LoggingLevel.INFO,'listResult: '+ listResult);
+        Integer MAX_RETRY = 3;
+        if(intExecutionCount<MAX_RETRY){
+            Dml.deleteAsync(listResult)
+                .callback('AsyncDmlExtension.asyncCallback')
+                .executionCount(intExecutionCount+1)
+                .submit();
+        }else{
+            Database.insert(
+                new Task(
+                    Subject = strStatus,
+                    OwnerId = UserInfo.getUserId(),
+                    Description = 'JobId: ' + String.valueOf(jobId)
+                )
+            );
+        }
         return null;
     }
 }

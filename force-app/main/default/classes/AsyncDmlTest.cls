@@ -24,7 +24,8 @@ public class AsyncDmlTest {
         }
         Test.startTest();
         System.runAs([SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive=true LIMIT 1][0]){
-            AsyncDml.insertList(listAccount);
+            Dml.insertAsync(listAccount)
+                .submit();
         }
         Test.stopTest();
         System.assertEquals(10, [SELECT COUNT() FROM Account WHERE Name LIKE 'AsyncInsert%'], '10 accounts should have been inserted.');
@@ -43,7 +44,9 @@ public class AsyncDmlTest {
         listAccount[0].name=null;
         Test.startTest();
         System.runAs([SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive=true LIMIT 1][0]){
-            AsyncDml.insertList(listAccount, null, 'AsyncDmlExtension.asyncCallback');
+            Dml.insertAsync(listAccount)
+                .callback('AsyncDmlExtension.asyncCallback')
+                .submit();
         }
         Test.stopTest();
         System.assertEquals(0, [SELECT COUNT() FROM Account WHERE Name LIKE 'AsyncInsert%'], 'No accounts should have been inserted.');
@@ -64,7 +67,10 @@ public class AsyncDmlTest {
         listAccount[0].name=null;
         Test.startTest();
         System.runAs([SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive=true LIMIT 1][0]){
-            AsyncDml.insertList(listAccount, false, 'AsyncDmlExtension.asyncCallback');
+            Dml.insertAsync(listAccount)
+                .isAllOrNone(false)
+                .callback('AsyncDmlExtension.asyncCallback')
+                .submit();
         }
         Test.stopTest();
         System.assertEquals(9, [SELECT COUNT() FROM Account WHERE Name LIKE 'AsyncInsertAll%'], '9 accounts should have been insert. 1 should fail.');
@@ -78,7 +84,8 @@ public class AsyncDmlTest {
         }
         Test.startTest();
         System.runAs([SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive=true LIMIT 1][0]){
-            AsyncDml.updateList(listAccountToUpdate);
+            Dml.updateAsync(listAccountToUpdate)
+                .submit();
         }
         Test.stopTest();
         System.assertEquals(listAccountToUpdate.size(), [SELECT COUNT() FROM Account WHERE Name LIKE 'AsyncUpdate%'], '10 accounts should have been updated.');
@@ -91,7 +98,9 @@ public class AsyncDmlTest {
         }
         Test.startTest();
         System.runAs([SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive=true LIMIT 1][0]){
-            AsyncDml.updateList(listAccountToUpdate, null, 'AsyncDmlExtension.asyncCallback');
+            Dml.updateAsync(listAccountToUpdate)
+                .callback('AsyncDmlExtension.asyncCallback')
+                .submit();
         }
         Test.stopTest();
         System.assertEquals(10, [SELECT COUNT() FROM Account WHERE Name LIKE 'TestAsync%'], 'None of 10 accounts should have been updated.');
@@ -102,7 +111,8 @@ public class AsyncDmlTest {
         List<Account> listAccountToDelete = [SELECT Id, Name FROM Account WHERE Name LIKE 'TestAsync%'];
         Test.startTest();
         System.runAs([SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive=true LIMIT 1][0]){
-            AsyncDml.deleteList(listAccountToDelete);
+            Dml.deleteAsync(listAccountToDelete)
+            .submit();
         }
         Test.stopTest();
         System.assertEquals(0, [SELECT COUNT() FROM Account WHERE Name LIKE 'TestAsync%'], 'All accounts should have been deleted.');
@@ -110,11 +120,12 @@ public class AsyncDmlTest {
     @IsTest
     static void testInsertRecord_positive(){
         Account accountToInsert = new Account(
-                                        name = 'AsyncInsert'+'2'
-                                    );
+            name = 'AsyncInsert'+'2'
+        );
         Test.startTest();
         System.runAs([SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive=true LIMIT 1][0]){
-            AsyncDml.insertRecord(accountToInsert);
+            Dml.insertAsync(accountToInsert)
+                .submit();
         }
         Test.stopTest();
         System.assertEquals(1, [SELECT COUNT() FROM Account WHERE Name LIKE 'AsyncInsert%'], '1 account should have been inserted.');
@@ -124,12 +135,14 @@ public class AsyncDmlTest {
         Account accountToUpdate = [SELECT Id, Name FROM Account WHERE Name LIKE 'TestAsync%' LIMIT 1];
         accountToUpdate.Name = 'AsyncUpsert'+'1';
         Account accountToInsert = new Account(
-                                        name = 'AsyncUpsert'+'2'
-                                    );
+            name = 'AsyncUpsert'+'2'
+        );
         Test.startTest();
         System.runAs([SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive=true LIMIT 1][0]){
-            AsyncDml.upsertRecord(accountToUpdate);
-            AsyncDml.upsertRecord(accountToInsert);
+            Dml.upsertAsync(accountToUpdate)
+                .submit();
+            Dml.upsertAsync(accountToInsert)
+                .submit();
         }
         Test.stopTest();
         System.assertEquals(2, [SELECT COUNT() FROM Account WHERE Name LIKE 'AsyncUpsert%'], '2 accounts should have been upserted.');
@@ -140,7 +153,8 @@ public class AsyncDmlTest {
         accountToUpdate.Name = 'AsyncUpdate'+'1';
         Test.startTest();
         System.runAs([SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive=true LIMIT 1][0]){
-            AsyncDml.updateRecord(accountToUpdate);
+            Dml.updateAsync(accountToUpdate)
+                .submit();
         }
         Test.stopTest();
         System.assertEquals(1, [SELECT COUNT() FROM Account WHERE Name LIKE 'AsyncUpdate%'], '1 accounts should have been updated.');
@@ -150,9 +164,10 @@ public class AsyncDmlTest {
         Account accountToDelete = [SELECT Id, Name FROM Account WHERE Name LIKE 'TestAsync%' LIMIT 1];
         Test.startTest();
         System.runAs([SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive=true LIMIT 1][0]){
-            AsyncDml.deleteRecord(accountToDelete);
+            Dml.deleteAsync(accountToDelete)
+                .submit();
         }
         Test.stopTest();
-        System.assertEquals(0, [SELECT COUNT() FROM Account WHERE Id = :accountToDelete.Id], 'The account should have been updated.');
+        System.assertEquals(0, [SELECT COUNT() FROM Account WHERE Id = :accountToDelete.Id], '1 account should have been deleted.');
     }
 }

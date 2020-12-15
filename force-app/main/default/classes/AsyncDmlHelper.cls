@@ -1,33 +1,72 @@
 public with sharing class AsyncDmlHelper implements Queueable {
     private List<sObject> listSObject;
-    private Boolean allOrNone=true;// default true
-    private String strOperation;//List<SObject> only allows insert, update or delete. upsert is allowed only for single record. 
-    private Set<String> setOperations = new Set<String>{'insert','update', 'delete', 'upsert'};
+    private Boolean allOrNone=true;
+    private String strOperation;
+    private Set<String> setOperations= new Set<String>{'insert','update', 'delete', 'upsert'};
     private Queueable chainedJob;
     private String strCallbackMethod;
+    private Integer intExecutionCount;
 
     private Id jobId;
     private String strErrorMessage;
     private Database.SaveResult[] listSaveResult;
     private Database.UpsertResult[] listUpsertResult;
     private Database.DeleteResult[] listDeleteResult;
+
     /*
-    * Description: Constructor to set AsyncDmlHelper variables.
     * @param listRecords: record to perform DML operation.
-    * @param strOperation: DML operation.
-    * @param isAllOrNone: DML option of all or none records.
-    * @param strCallbackMethod: Fully qualified API Name of callback method. The callback class MUST implement Callable interface.
-    * @param chainedJob: the chainedJob to be executed on completion of the current job.
-    * @return n/a
+    * @return AsyncDmlHelper: updated AsyncDmlHelper object with records to perfrorm DML operation
     */
-    public AsyncDmlHelper(List<sObject> listRecords, String strOperation, Boolean isAllOrNone, String strCallbackMethod, Queueable chainedJob){
+    public AsyncDmlHelper records(List<sObject> listRecords){
+        this.listSObject = listRecords;
+        return this;
+    }
+    /*
+    * @param strOperation: DML operation.
+    * @return AsyncDmlHelper: updated AsyncDmlHelper object with DML operation option
+    */
+    public AsyncDmlHelper operation(String strOperation){
         this.strOperation = this.setOperations.contains(strOperation.toLowerCase())?strOperation.toLowerCase():null;
-        if(String.isNotBlank(this.strOperation)){
-            this.listSObject = listRecords;
-            this.allOrNone = isAllOrNone==null?true:isAllOrNone;
-            this.strCallbackMethod = strCallbackMethod;
-            this.chainedJob = chainedJob;
-        }
+        return this;
+    }
+    /*
+    * @param isAllOrNone: DML option of all or none records.
+    * @return AsyncDmlHelper: updated AsyncDmlHelper object with AllOrNone option
+    */
+    public AsyncDmlHelper isAllOrNone(Boolean isAllOrNone){
+        this.allOrNone = isAllOrNone==null?true:isAllOrNone;
+        return this;
+    }
+    /*
+    * @param strCallbackMethod: Fully qualified API Name of callback method. The callback class MUST implement Callable interface.
+    * @return AsyncDmlHelper: updated AsyncDmlHelper object with callback method details
+    */
+    public AsyncDmlHelper callback(String strCallbackMethod){
+        this.strCallbackMethod = strCallbackMethod;
+        return this;
+    }
+    /*
+    * @param chainedJob: the chainedJob to be executed on completion of the current job.
+    * @return AsyncDmlHelper: updated AsyncDmlHelper object with chained job details
+    */
+    public AsyncDmlHelper chainedJob(Queueable chainedJob){
+        this.chainedJob = chainedJob;
+        return this;
+    }
+    /*
+    * @param intExecutionCount: number of times this job is retried.
+    * @return AsyncDmlHelper: updated AsyncDmlHelper object with job execution count details
+    */
+    public AsyncDmlHelper executionCount(Integer intExecutionCount){
+        this.intExecutionCount = intExecutionCount;
+        return this;
+    }
+    /*
+    * @param void
+    * @return Id: job Id of enqueued job
+    */
+    public Id submit(){
+        return System.enqueueJob(this);
     }
     /*
     * Description: execute method of Queueable interface.
@@ -90,6 +129,7 @@ public with sharing class AsyncDmlHelper implements Queueable {
             , 'strStatus' => strStatus
             , 'strErrorMessage' => this.strErrorMessage
             , 'listResult' => listResult 
+            , 'intExecutionCount' => this.intExecutionCount==null?1:this.intExecutionCount
         });
     }
     /*
