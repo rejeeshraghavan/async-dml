@@ -27,7 +27,7 @@ Also, asynchronous mode has increased governor limits, as below:-
 ## Usage
 
 ### Optional setup methods
-  Below are the optional methods for each operation:-
+  Below are the optional methods to setup additional configuration:-
     
   - `isAllOrNone` - To specify whether the operation allows partial success. Default is true.
     
