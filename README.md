@@ -13,11 +13,12 @@ Also, asynchronous mode has increased governor limits, as below:-
 
 ## Features
 
-- Perform asynchronous dml operation just like a standard dml operation.
-  - e.g., AsyncDml.insert(accountRecord); or AsyncDml.update(listAccount);
+- Perform asynchronous dml operation with ease.
+  - e.g., Dml.insertAsync(accountRecord).submit(); or Dml.updateAsync(listAccount).submit();
 - Uses reliable Queueable interface. So, its not limited to primitive datatype as @future methods.
 - Allows callback methods to be invoked after dml execution.
 - Allows chaining of queueable jobs.
+- Allows to setup retry mechanism.
 
 ## Installation
 
@@ -25,16 +26,17 @@ Also, asynchronous mode has increased governor limits, as below:-
 
 ## Usage
 
-### Method input parameters
-  Below are the optional parameters for each operation:-
+### Optional setup methods
+  Below are the optional methods for each operation:-
     
   - `isAllOrNone` - To specify whether the operation allows partial success. Default is true.
     
-  - `strCallbackMethod` - Fully qualified API Name of callback method. The callback class MUST implement Callable interface.
+  - `callback` - Fully qualified API Name of callback method. The callback class MUST implement Callable interface.
       - callbackMethod - returns the following parameters:-
         - `jobId` - Queueable jobId of the current job.
-        - `strStatus` - status of job, 'success' or 'failure'.
+        - `strStatus` - Status of job, 'success' or 'failure'.
         - `strErrorMessage` - Error message, if any. In case of success, this parameter will be null.
+        - `intExecutionCount` - Current execution count. This can be used for retry mechanism(Check `AsyncDmlExtension` class for example).
         - `listResult` - If 'success' it returns Database.SaveResult[] or Database.DeleteResult[] or Database.UpsertResult[]. In case of 'failure' it returns the input list.
     
   - `chainedJob` - The chainedJob to be executed on completion of the current job.
@@ -54,20 +56,24 @@ Also, asynchronous mode has increased governor limits, as below:-
 ### Insert List
   ```java
   //this will simply insert the list of accounts as a queueable job
-  AsyncDml.insertList(listAccountToInsert);
+  Dml.insertAsync(listAccountToInsert).submit();
   ```
 
 ### Insert list with allOrNone
   ```java
   //this will simply insert the list of accounts as a queueable job.
-  AsyncDml.insertList(listAccountToInsert, false);
+  Dml.insertAsync(listAccountToInsert)
+    .isAllOrNone(false)
+    .submit();
   ```
 
 ### Insert list with callbackMethod
   ```java
   //this will simply insert the list of accounts as a queueable job.
   //After the DML operation AsyncDmlExtension.callbackMethod() method is invoked.
-  AsyncDml.insertList(listAccountToInsert, null, 'AsyncDmlExtension.callbackMethod');
+  Dml.insertAsync(listAccountToInsert)
+    .callback('AsyncDmlExtension.callbackMethod')
+    .submit();
   ```
 
 ###### NOTE
@@ -76,11 +82,12 @@ Also, asynchronous mode has increased governor limits, as below:-
 ### Insert list with chained queueable job
   ```java
   //create a queueable job to be chained
-  AsyncDmlHelper chainedJob = new AsyncDmlHelper(new List<SObject>{accountToUpsert}, 'upsert', null, null, null);
+  AsyncDmlHelper chainedJob = Dml.upsertAsync(accountToUpsert);
   
   //this will insert the list of Accounts, & once the insert is finished
   //it will enqueue the upsert operation.
-  AsyncDml.insertList(listAccountToInsert, null, null, chainedJob);
+  Dml.insertAsync(listAccountToInsert)
+    .chainedJob(chainedJob);
   ```
 ###### NOTE
   - chaining queueable methods comes handy when dealing with high volume of records.
