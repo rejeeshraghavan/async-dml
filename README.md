@@ -22,7 +22,10 @@ Also, asynchronous mode has increased governor limits, as below:-
 
 ## Installation
 
-  TODO: Add installation button
+  <a href="https://githubsfdeploy.herokuapp.com?owner=rejeeshraghavan&repo=async-dml">
+    <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
+  </a>
 
 ## Usage
 
