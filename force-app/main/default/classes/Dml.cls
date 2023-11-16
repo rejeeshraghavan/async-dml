@@ -1,5 +1,5 @@
 public with sharing class Dml {
-    private static AsyncDmlHelper asyncDmlJob= new AsyncDmlHelper();
+    private static AsyncDmlHelper asyncDmlJob;
     private static String INSERT_OP='insert',
                             UPDATE_OP='update',
                             DELETE_OP='delete',
@@ -9,6 +9,7 @@ public with sharing class Dml {
     * @return AsyncDmlHelper: updated AsyncDmlHelper object with insert operation option for a list of records
     */
     public static AsyncDmlHelper insertAsync(List<SObject> listRecordsToInsert){
+        asyncDmlJob= new AsyncDmlHelper();
         asyncDmlJob.records(listRecordsToInsert);
         asyncDmlJob.operation(INSERT_OP);
         return asyncDmlJob;
@@ -25,6 +26,7 @@ public with sharing class Dml {
     * @return AsyncDmlHelper: updated AsyncDmlHelper object with update operation option for a list of records
     */
     public static AsyncDmlHelper updateAsync(List<SObject> listRecordsToUpdate){
+        asyncDmlJob= new AsyncDmlHelper();
         asyncDmlJob.records(listRecordsToUpdate);
         asyncDmlJob.operation(UPDATE_OP);
         return asyncDmlJob;
@@ -41,6 +43,7 @@ public with sharing class Dml {
     * @return AsyncDmlHelper: updated AsyncDmlHelper object with delete operation option for a list of records
     */
     public static AsyncDmlHelper deleteAsync(List<SObject> listRecordsToDelete){
+        asyncDmlJob= new AsyncDmlHelper();
         asyncDmlJob.records(listRecordsToDelete);
         asyncDmlJob.operation(DELETE_OP);
         return asyncDmlJob;
@@ -57,6 +60,7 @@ public with sharing class Dml {
     * @return AsyncDmlHelper: updated AsyncDmlHelper object with upsert operation options
     */
     public static AsyncDmlHelper upsertAsync(sObject recordToUpsert){
+        asyncDmlJob= new AsyncDmlHelper();
         asyncDmlJob.records(new List<SObject>{recordToUpsert});
         asyncDmlJob.operation(UPSERT_OP);
         return asyncDmlJob;

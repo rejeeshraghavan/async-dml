@@ -58,13 +58,13 @@ Also, asynchronous mode has increased governor limits, as below:-
 
 ### Insert List
   ```java
-  //this will simply insert the list of accounts as a queueable job
+  //this will insert the list of accounts as a queueable job
   Dml.insertAsync(listAccountToInsert).submit();
   ```
 
 ### Insert list with allOrNone
   ```java
-  //this will simply insert the list of accounts as a queueable job.
+  //this will insert the list of accounts as a queueable job.
   Dml.insertAsync(listAccountToInsert)
     .isAllOrNone(false)
     .submit();
@@ -72,7 +72,7 @@ Also, asynchronous mode has increased governor limits, as below:-
 
 ### Insert list with callbackMethod
   ```java
-  //this will simply insert the list of accounts as a queueable job.
+  //this will insert the list of accounts as a queueable job.
   //After the DML operation AsyncDmlExtension.callbackMethod() method is invoked.
   Dml.insertAsync(listAccountToInsert)
     .callback('AsyncDmlExtension.callbackMethod')
@@ -90,10 +90,11 @@ Also, asynchronous mode has increased governor limits, as below:-
   //this will insert the list of Accounts, & once the insert is finished
   //it will enqueue the upsert operation.
   Dml.insertAsync(listAccountToInsert)
-    .chainedJob(chainedJob);
+    .chainedJob(chainedJob)
+    .submit();
   ```
 ###### NOTE
-  - chaining queueable methods comes handy when dealing with high volume of records.
+  - chaining queueable methods comes handy when dealing with high volume of records or records of different sObject types(max 10 types per DML operation).
   
 ### CONSIDERATIONS
 
